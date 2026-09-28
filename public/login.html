@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ken's Entreprise - Admin Login</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Arial,sans-serif}body{min-height:100vh;display:flex;justify-content:center;align-items:center;background:linear-gradient(135deg,#111,#444,#111);overflow:hidden}.circle{position:absolute;border-radius:50%;background:rgba(255,255,255,.05)}.one{width:300px;height:300px;top:-100px;left:-100px}.two{width:400px;height:400px;bottom:-150px;right:-150px}.login-box{width:400px;max-width:90%;padding:40px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:20px;backdrop-filter:blur(15px);box-shadow:0 20px 50px rgba(0,0,0,.5);color:#fff;position:relative;z-index:2}.logo{width:70px;height:70px;margin:0 auto 15px;display:flex;justify-content:center;align-items:center;border-radius:50%;background:#fff;color:#111;font-size:24px;font-weight:bold}h1{text-align:center;margin-bottom:5px}.subtitle{text-align:center;color:#ccc;margin-bottom:30px}label{display:block;margin-bottom:8px;font-size:14px}input{width:100%;padding:14px;margin-bottom:20px;border:0;outline:0;border-radius:10px;background:rgba(255,255,255,.9);color:#111;font-size:15px}button{width:100%;padding:14px;border:0;border-radius:10px;background:#fff;color:#111;font-size:16px;font-weight:bold;cursor:pointer}button:hover{background:#ccc}#message{margin-top:20px;text-align:center;font-weight:bold}.success{color:#7CFF7C}.error{color:#FF7777}.back{display:block;text-align:center;margin-top:20px;color:#fff;text-decoration:none}.back:hover{text-decoration:underline}
+</style>
+</head>
+<body>
+<div class="circle one"></div><div class="circle two"></div>
+<div class="login-box">
+<div class="logo">KE</div>
+<h1>Ken's Entreprise</h1><p class="subtitle">Admin Portal</p>
+<form id="loginForm">
+<label>Username</label><input type="text" id="username" placeholder="Enter username" required>
+<label>Password</label><input type="password" id="password" placeholder="Enter password" required>
+<button type="submit" id="loginButton">Login</button>
+</form>
+<div id="message"></div><a href="/" class="back">← Back to Website</a>
+</div>
+<script>
+document.getElementById("loginForm").addEventListener("submit",async e=>{
+ e.preventDefault();
+ const message=document.getElementById("message"),button=document.getElementById("loginButton");
+ button.textContent="Logging in...";button.disabled=true;message.textContent="";
+ try{
+  const response=await fetch("/api/admin/login",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({username:document.getElementById("username").value.trim(),password:document.getElementById("password").value})});
+  const data=await response.json();
+  if(data.success){message.textContent="✓ "+data.message;message.className="success";localStorage.setItem("admin",JSON.stringify(data.admin));setTimeout(()=>window.location.href="/",1200)}
+  else{message.textContent="✗ "+data.message;message.className="error"}
+ }catch(err){message.textContent="Unable to connect to the server.";message.className="error"}
+ button.textContent="Login";button.disabled=false;
+});
+</script>
+</body>
+</html>
